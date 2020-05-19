@@ -16,8 +16,8 @@ namespace Number2word.Factories
         IUnit _iUnit;
         private ILogger _logger;
 
-       public NumberToWordTranslatorFactory(ILogger<NumberToWordTranslatorFactory> logger)
-       
+        public NumberToWordTranslatorFactory(ILogger<NumberToWordTranslatorFactory> logger)
+      
         {
             _logger = logger;
             _numberUnitImplementation = new Dictionary<int, string>();
@@ -29,11 +29,16 @@ namespace Number2word.Factories
             _numberUnitImplementation.Add(6, "thousand");
             _numberUnitImplementation.Add(7, "million");
             _numberUnitImplementation.Add(8, "million");
-            _numberUnitImplementation.Add(9, "million");           
+            _numberUnitImplementation.Add(9, "million");
 
+          
         }
 
-       
+        /// <summary>
+        /// This factory method automatically resolves concreate class and expossed as interface
+        /// </summary>
+        /// <param name="Number">Input valid number</param>
+        /// <returns>string</returns>
         public response<string> Translate(string Number)
         {
 
@@ -62,7 +67,11 @@ namespace Number2word.Factories
 
         }
 
-       
+        /// <summary>
+        /// Validated given number as per business rules
+        /// </summary>
+        /// <param name="Number">Input valid number</param>
+        /// <returns>boolean</returns>
         public response<bool> ValidateInput(String Number)
         {
             response<bool> response = new response<bool>();
@@ -73,7 +82,7 @@ namespace Number2word.Factories
                 // supports 12 chars
                 // should be +ve number
                 // should not contain decimals
-                // can not have strings allowed numbers only.
+                // can not have strings allowed numbers only
                
                
 
@@ -99,7 +108,7 @@ namespace Number2word.Factories
            
             try
             {
-               
+                
 
                // Loads Number unit implementaions as IUnit interface                
                 _iUnit = (IUnit)Assembly.GetExecutingAssembly().CreateInstance("Number2word.Implementation." + _numberUnitImplementation[Number.Length]);
@@ -108,7 +117,7 @@ namespace Number2word.Factories
                 Position = _iUnit.GetPosition();
                 DigitPlace = _iUnit.GetDigitPlace();
 
-                //LOOP
+                //if transalation is not done, continue...(Recursion comes in now!!)  
                 if (!IsTranslated)
                 {
                     if (Number.Substring(0, Position) != "0" && Number.Substring(Position) != "0")
@@ -120,7 +129,7 @@ namespace Number2word.Factories
                         Translation = TranslateNumber(Number.Substring(0, Position)) + TranslateNumber(Number.Substring(Position));
                     }
                 }
-              
+             
             }
             catch(Exception ex)
             {
