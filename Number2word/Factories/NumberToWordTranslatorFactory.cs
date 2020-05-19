@@ -12,17 +12,19 @@ namespace Number2word.Factories
 {
     public class NumberToWordTranslatorFactory : ITranslator
     {
-        private Dictionary<int, string> _numberUnitImplementation;       
+        private Dictionary<int, string> _numberUnitImplementation;        
         private ILogger _logger;
         IUnit _iUnit;
 
         public NumberToWordTranslatorFactory(ILogger<NumberToWordTranslatorFactory> logger)
-        { 
+       
+        {
             _logger = logger;
             _numberUnitImplementation = new Dictionary<int, string>();
             _numberUnitImplementation.Add(1, "ones");
             _numberUnitImplementation.Add(2, "tens");
-           
+            _numberUnitImplementation.Add(3, "hundreds");
+            
 
         }
 
@@ -68,8 +70,8 @@ namespace Number2word.Factories
                 // should not contain decimals
                 // can not have strings allowed numbers only.
                 // bool beginsZero = false;//tests for                
-                //test for zero or digit zero in a nuemric    
-                            
+                //test for zero or digit zero in a nuemric 
+
 
 
             }
@@ -85,29 +87,31 @@ namespace Number2word.Factories
 
         private string TranslateNumber(String Number)
         {
-            
-            string Translation = string.Empty;          
+            //Local variables
+            string Translation = string.Empty;
+               
            
             try
             {
-
-
                 // Loads Number unit implementaions as IUnit interface    
-                String DigitPlace = string.Empty;        
+                String DigitPlace = string.Empty;         
+                bool IsTranslated = true;                 
                 int Position = 0;
-                bool IsTranslated = true;
-                _iUnit = (IUnit)Assembly.GetExecutingAssembly().CreateInstance("Number2word.Implementation." + _numberUnitImplementation[Number.Length]);
+                string implementationname = "Number2word.Implementation." + _numberUnitImplementation[Number.Length];
+                _iUnit = (IUnit)Assembly.GetExecutingAssembly().CreateInstance(implementationname);
                 Translation = _iUnit.Translate(Number);
                 IsTranslated = _iUnit.IsDone();
                 Position = _iUnit.GetPosition();
                 DigitPlace = _iUnit.GetDigitPlace();
 
-                //loop 
+                //loop
                 if (!IsTranslated)
                 {
+                    if (Number.Substring(0, Position) != "0" && Number.Substring(Position) != "0")
+                    {
+                        Translation = TranslateNumber(Number.Substring(0, Position)) + DigitPlace + TranslateNumber(Number.Substring(Position));
+                    }
                    
-                        Translation = TranslateNumber(Number.Substring(0, Position)) + TranslateNumber(Number.Substring(Position));
-                  
                 }
                
             }
