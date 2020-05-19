@@ -14,23 +14,19 @@ namespace Number2word.Factories
     {
         private Dictionary<int, string> _numberUnitImplementation;       
         private ILogger _logger;
+        IUnit _iUnit;
 
         public NumberToWordTranslatorFactory(ILogger<NumberToWordTranslatorFactory> logger)
-        
-        {
+        { 
             _logger = logger;
             _numberUnitImplementation = new Dictionary<int, string>();
             _numberUnitImplementation.Add(1, "ones");
             _numberUnitImplementation.Add(2, "tens");
-            
+           
 
         }
 
-        /// <summary>
-        /// This factory method automatically resolves concreate class and expossed as interface
-        /// </summary>
-        /// <param name="Number">Input valid number</param>
-        /// <returns>string</returns>
+       
         public response<string> Translate(string Number)
         {
 
@@ -59,11 +55,7 @@ namespace Number2word.Factories
 
         }
 
-        /// <summary>
-        /// Validated given number as per business rules
-        /// </summary>
-        /// <param name="Number">Input valid number</param>
-        /// <returns>boolean</returns>
+       
         public response<bool> ValidateInput(String Number)
         {
             response<bool> response = new response<bool>();
@@ -75,13 +67,9 @@ namespace Number2word.Factories
                 // should be +ve number
                 // should not contain decimals
                 // can not have strings allowed numbers only.
-                // bool beginsZero = false;//tests for 0XX   
-                //if ((dblAmt > 0) && number.StartsWith("0"))    
-                //if (dblAmt > 0)
-                //{ }
+                // bool beginsZero = false;//tests for                
                 //test for zero or digit zero in a nuemric    
-                //beginsZero = Number.StartsWith("0");
-               
+                            
 
 
             }
@@ -98,8 +86,36 @@ namespace Number2word.Factories
         private string TranslateNumber(String Number)
         {
             
-            string Translation = string.Empty;
+            string Translation = string.Empty;          
            
+            try
+            {
+
+
+                // Loads Number unit implementaions as IUnit interface    
+                String DigitPlace = string.Empty;        
+                int Position = 0;
+                bool IsTranslated = true;
+                _iUnit = (IUnit)Assembly.GetExecutingAssembly().CreateInstance("Number2word.Implementation." + _numberUnitImplementation[Number.Length]);
+                Translation = _iUnit.Translate(Number);
+                IsTranslated = _iUnit.IsDone();
+                Position = _iUnit.GetPosition();
+                DigitPlace = _iUnit.GetDigitPlace();
+
+                //loop 
+                if (!IsTranslated)
+                {
+                   
+                        Translation = TranslateNumber(Number.Substring(0, Position)) + TranslateNumber(Number.Substring(Position));
+                  
+                }
+               
+            }
+            catch(Exception ex)
+            {
+                // log error and throw it
+                _logger.LogError(ex, "");
+            }
             return Translation;
         }
 
