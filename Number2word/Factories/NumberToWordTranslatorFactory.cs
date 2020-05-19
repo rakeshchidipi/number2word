@@ -16,10 +16,10 @@ namespace Number2word.Factories
         IUnit _iUnit;
         private ILogger _logger;
 
-        public NumberToWordTranslatorFactory(ILogger<NumberToWordTranslatorFactory> logger)
-       
+        
+        public NumberToWordTranslatorFactory()
         {
-            _logger = logger;
+            
             _numberUnitImplementation = new Dictionary<int, string>();
             _numberUnitImplementation.Add(1, "ones");
             _numberUnitImplementation.Add(2, "tens");
@@ -29,10 +29,14 @@ namespace Number2word.Factories
             _numberUnitImplementation.Add(6, "thousand");
             _numberUnitImplementation.Add(7, "million");
             _numberUnitImplementation.Add(8, "million");
-            _numberUnitImplementation.Add(9, "million");           
-            _numberUnitImplementation.Add(10, "billion");
-            _numberUnitImplementation.Add(11, "billion");
-            _numberUnitImplementation.Add(12, "billion");
+            _numberUnitImplementation.Add(9, "million");
+
+            //**** Just uncomment below implementation to support billion upto 12 digits
+            //** Rest all code will be same .un comment below 3 lines. no other changes required
+
+           // _numberUnitImplementation.Add(10, "billion");
+           // _numberUnitImplementation.Add(11, "billion");
+           // _numberUnitImplementation.Add(12, "billion");
 
         }
 
@@ -85,6 +89,14 @@ namespace Number2word.Factories
                 // should be +ve number
                 // should not contain decimals
                 // can not have strings allowed numbers only.
+                // bool beginsZero = false;//tests for 0XX   
+                //if ((dblAmt > 0) && number.StartsWith("0"))    
+                //if (dblAmt > 0)
+                //{ }
+                //test for zero or digit zero in a nuemric    
+                //beginsZero = Number.StartsWith("0");
+               
+
 
             }
             catch (Exception ex)

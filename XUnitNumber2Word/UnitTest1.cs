@@ -13,9 +13,15 @@ namespace XUnitNumber2Word
        
         public UnitTest1()
         {
-         
-            _ITranslator =(ITranslator) new Mock<ITranslator>();
-          
+            var services = new ServiceCollection();
+            services.AddTransient<ITranslator, NumberToWordTranslatorFactory>();
+            var serviceProvider = services.BuildServiceProvider();
+
+            _ITranslator = serviceProvider.GetService<ITranslator>();
+
+
+           // _ITranslator =(ITranslator) new Mock<ITranslator>();
+           // _ITranslator = new NumberToWordTranslatorFactory();
         }
         [Fact]
         public void Test()
