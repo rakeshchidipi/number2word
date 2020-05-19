@@ -81,22 +81,32 @@ namespace Number2word.Factories
         public response<bool> ValidateInput(String Number)
         {
             response<bool> response = new response<bool>();
+            Boolean isvalid = true;
             try
             {
-                response.result = true;
+              
+               
                 //validations
                 // supports 12 chars
                 // should be +ve number
                 // should not contain decimals
                 // can not have strings allowed numbers only.
                 // bool beginsZero = false;//tests for 0XX   
-                //if ((dblAmt > 0) && number.StartsWith("0"))    
-                //if (dblAmt > 0)
-                //{ }
-                //test for zero or digit zero in a nuemric    
-                //beginsZero = Number.StartsWith("0");
-               
 
+                if (string.IsNullOrEmpty(Number))
+                {
+                   isvalid = false;
+                }
+                if (Number.Contains("."))
+                {
+                    isvalid = false;
+                }
+                double number;
+                isvalid= double.TryParse(Number, out number);
+                if (isvalid && number<0)
+                {
+                    isvalid= false;                   
+                }
 
             }
             catch (Exception ex)
@@ -104,7 +114,7 @@ namespace Number2word.Factories
                 // log error and throw it
                 _logger.LogError(ex, "");
             }
-
+            response.result = isvalid;
             return response;
         }
 
