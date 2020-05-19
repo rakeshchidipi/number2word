@@ -17,7 +17,7 @@ namespace Number2word.Factories
         private ILogger _logger;
 
         public NumberToWordTranslatorFactory(ILogger<NumberToWordTranslatorFactory> logger)
-      
+       
         {
             _logger = logger;
             _numberUnitImplementation = new Dictionary<int, string>();
@@ -29,9 +29,11 @@ namespace Number2word.Factories
             _numberUnitImplementation.Add(6, "thousand");
             _numberUnitImplementation.Add(7, "million");
             _numberUnitImplementation.Add(8, "million");
-            _numberUnitImplementation.Add(9, "million");
+            _numberUnitImplementation.Add(9, "million");           
+            _numberUnitImplementation.Add(10, "billion");
+            _numberUnitImplementation.Add(11, "billion");
+            _numberUnitImplementation.Add(12, "billion");
 
-          
         }
 
         /// <summary>
@@ -82,10 +84,7 @@ namespace Number2word.Factories
                 // supports 12 chars
                 // should be +ve number
                 // should not contain decimals
-                // can not have strings allowed numbers only
-               
-               
-
+                // can not have strings allowed numbers only.
 
             }
             catch (Exception ex)
@@ -108,7 +107,9 @@ namespace Number2word.Factories
            
             try
             {
-                
+                //Handling zeros
+                 Number = (Convert.ToDouble(Number).ToString());
+                if (Convert.ToDouble(Number) == 0) { return "Zero"; }
 
                // Loads Number unit implementaions as IUnit interface                
                 _iUnit = (IUnit)Assembly.GetExecutingAssembly().CreateInstance("Number2word.Implementation." + _numberUnitImplementation[Number.Length]);
@@ -129,7 +130,7 @@ namespace Number2word.Factories
                         Translation = TranslateNumber(Number.Substring(0, Position)) + TranslateNumber(Number.Substring(Position));
                     }
                 }
-             
+                // if (Translation.Trim().Equals(DigitPlace.Trim())) Translation = "";
             }
             catch(Exception ex)
             {

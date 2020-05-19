@@ -1,15 +1,22 @@
 using System;
 using Xunit;
+using Number2word.Factories;
+using Number2word.Interface;
 using Moq;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace XUnitNumber2Word
 {
     public class UnitTest1
     {
-        
+        private ITranslator _ITranslator;
        
-        
+        public UnitTest1()
+        {
+         
+            _ITranslator =(ITranslator) new Mock<ITranslator>();
+          
+        }
         [Fact]
         public void Test()
         {
@@ -31,7 +38,7 @@ namespace XUnitNumber2Word
         // negative case
         public void Test_ValidateNumber_ng(string Number,bool Expected)
         {
-            bool actual = false;
+            bool actual = _ITranslator.ValidateInput(Number).result;
 
             Assert.Equal(Expected, actual);
         }
@@ -51,7 +58,7 @@ namespace XUnitNumber2Word
         // Positive cases
         public void Test_ValidateNumber_ps(string Number, bool Expected)
         {
-            bool actual = false;
+            bool actual = _ITranslator.ValidateInput(Number).result;
 
             Assert.Equal(Expected, actual);
         }
@@ -72,7 +79,7 @@ namespace XUnitNumber2Word
         //[InlineData("999999999999", "One Thousand Two Hundred Thirty Four")]      
         public void Test_Translate(string Number, string Excpected)
         {
-            string actual = string.Empty;
+            string actual = _ITranslator.Translate(Number).result;
 
             Assert.Equal(Excpected, actual, true);
         }
